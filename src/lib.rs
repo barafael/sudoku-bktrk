@@ -2,11 +2,16 @@ use std::fmt::Display;
 
 mod util;
 
+// TODO reduce mutability.
+
+// TODO impl Deref or just named struct.
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Board(pub [[usize; 9]; 9]);
 
+// TODO: make beautiful
 impl Display for Board {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // TODO simplify
         for i in 0..9 {
             for j in 0..9 {
                 write!(f, "{} ", self.0[i][j])?;
@@ -23,6 +28,7 @@ pub fn bktrk(board: &mut Board, mut row: usize, mut col: usize) -> bool {
     }
 
     if col == 9 {
+        // TODO remove bananas
         row += 1;
         col = 0
     }

@@ -1,4 +1,8 @@
+use std::convert::identity;
+
 use crate::Board;
+
+const SQUARE_SIZE: usize = 3;
 
 pub fn valid_pos(board: &Board, row: usize, col: usize, value: usize) -> bool {
     value == 0
@@ -8,40 +12,32 @@ pub fn valid_pos(board: &Board, row: usize, col: usize, value: usize) -> bool {
 }
 
 pub fn row_contains(board: &Board, row_index: usize, value: usize) -> bool {
-    for col_index in 0..9 {
-        if board.0[row_index][col_index] == value {
-            return true;
-        }
-    }
-    false
+    board.0[row_index].into_iter().any(|v| v == value)
 }
 
 pub fn col_contains(board: &Board, col_index: usize, value: usize) -> bool {
-    for row_index in 0..9 {
-        if board.0[row_index][col_index] == value {
-            return true;
-        }
-    }
-    false
+    board.0.into_iter().any(|row| row[col_index] == value)
 }
 
+// TODO simplify iterator spaghet
 pub fn square_contains(board: &Board, row: usize, col: usize, value: usize) -> bool {
     let start_row = row - row % 3;
     let start_col = col - col % 3;
-    for i in 0..3 {
-        for j in 0..3 {
-            if board.0[start_row + i][start_col + j] == value {
-                return true;
-            }
-        }
-    }
-    false
+    (start_row..start_row + SQUARE_SIZE)
+        .into_iter()
+        .map(|i| {
+            (start_col..start_col + SQUARE_SIZE)
+                .into_iter()
+                .map(move |j| (i, j))
+                .any(|(i, j)| board.0[i][j] == value)
+        })
+        .any(identity)
 }
 
 #[cfg(test)]
 mod test {
     use crate::{
-        util::{col_contains, square_contains},
+        util::{col_contains, row_contains, square_contains},
         Board,
     };
 
@@ -80,7 +76,17 @@ mod test {
         initial.0[3][1] = 5;
         assert!(col_contains(&initial, 1, 3));
         assert!(col_contains(&initial, 1, 5));
-        assert!(col_contains(&initial, 8, 7));
         assert!(!col_contains(&initial, 7, 1));
+    }
+
+    #[test]
+    fn row_contains_works() {
+        let mut initial = initial();
+        initial.0[1][1] = 1;
+        initial.0[1][8] = 3;
+        initial.0[1][3] = 5;
+        assert!(row_contains(&initial, 1, 3));
+        assert!(row_contains(&initial, 1, 5));
+        assert!(!row_contains(&initial, 7, 1));
     }
 }
