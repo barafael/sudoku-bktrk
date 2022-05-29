@@ -10,18 +10,18 @@ pub fn bktrk(board: &mut Board, row: usize, col: usize) -> bool {
         true
     } else if col == N {
         bktrk(board, row + 1, 0)
-    } else if board.0[row][col] > 0 {
+    } else if board[row][col] > 0 {
         bktrk(board, row, col + 1)
     } else {
         for num in 1..=N {
             if util::valid_pos(board, row, col, num) {
-                board.0[row][col] = num;
+                board[row][col] = num;
 
                 if bktrk(board, row, col + 1) {
                     return true;
                 }
             }
-            board.0[row][col] = 0;
+            board[row][col] = 0;
         }
         false
     }

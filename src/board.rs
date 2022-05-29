@@ -1,12 +1,26 @@
+use derive_more::{Deref, DerefMut};
 use serde::{Deserialize, Serialize};
 
 use crate::constants::N;
 use std::fmt::Display;
 
 // TODO impl Deref or just named struct.
-#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    Default,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Serialize,
+    Deserialize,
+    Deref,
+    DerefMut,
+)]
 #[cfg_attr(test, derive(proptest_derive::Arbitrary))]
-pub struct Board(pub [[usize; N]; N]);
+pub struct Board(pub(crate) [[usize; N]; N]);
 
 // TODO: make beautiful
 impl Display for Board {
