@@ -1,10 +1,8 @@
+use crate::constants::N;
 use derive_more::{Deref, DerefMut};
 use serde::{Deserialize, Serialize};
-
-use crate::constants::N;
 use std::fmt::Display;
 
-// TODO impl Deref or just named struct.
 #[derive(
     Debug,
     Copy,
