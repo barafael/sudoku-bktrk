@@ -42,10 +42,12 @@ fn rect_of_ranges_itertools(
 
 #[cfg(test)]
 mod test {
+    use super::rect_of_ranges;
     use crate::{
         util::{col_contains, row_contains, square_contains},
         Board,
     };
+    use itertools::Itertools;
 
     fn initial() -> Board {
         Board([
@@ -94,5 +96,26 @@ mod test {
         assert!(row_contains(&initial, 1, 3));
         assert!(row_contains(&initial, 1, 5));
         assert!(!row_contains(&initial, 7, 1));
+    }
+
+    #[test]
+    fn rect_of_ranges_works() {
+        let start = 3..6;
+        let end = 3..6;
+        let rect = rect_of_ranges(start, end);
+        assert_eq!(
+            rect.collect_vec(),
+            vec![
+                (3, 3),
+                (3, 4),
+                (3, 5),
+                (4, 3),
+                (4, 4),
+                (4, 5),
+                (5, 3),
+                (5, 4),
+                (5, 5)
+            ]
+        );
     }
 }
