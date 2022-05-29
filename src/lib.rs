@@ -1,28 +1,11 @@
+use board::Board;
 use constants::N;
-use std::fmt::Display;
 
+mod board;
 mod constants;
 pub mod util;
 
 // TODO reduce mutability.
-
-// TODO impl Deref or just named struct.
-#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Board(pub [[usize; N]; N]);
-
-// TODO: make beautiful
-impl Display for Board {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        // TODO simplify
-        for i in 0..N {
-            for j in 0..N {
-                write!(f, "{} ", self.0[i][j])?;
-            }
-            writeln!(f)?;
-        }
-        Ok(())
-    }
-}
 
 pub fn bktrk(board: &mut Board, mut row: usize, mut col: usize) -> bool {
     if row == N - 1 && col == N {
