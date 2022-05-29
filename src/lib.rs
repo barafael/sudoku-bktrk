@@ -2,7 +2,7 @@ use constants::N;
 use std::fmt::Display;
 
 mod constants;
-mod util;
+pub mod util;
 
 // TODO reduce mutability.
 

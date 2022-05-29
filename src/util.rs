@@ -17,7 +17,6 @@ pub fn col_contains(board: &Board, col_index: usize, value: usize) -> bool {
     board.0.into_iter().any(|row| row[col_index] == value)
 }
 
-// TODO simplify iterator spaghet
 pub fn square_contains(board: &Board, row: usize, col: usize, value: usize) -> bool {
     let start_row = row - row % SQUARE_SIZE;
     let start_col = col - col % SQUARE_SIZE;
@@ -28,12 +27,14 @@ pub fn square_contains(board: &Board, row: usize, col: usize, value: usize) -> b
     square.any(|(i, j)| board.0[i][j] == value)
 }
 
-fn rect_of_ranges(xs: Range<usize>, ys: Range<usize>) -> impl Iterator<Item = (usize, usize)> {
+#[inline]
+pub fn rect_of_ranges(xs: Range<usize>, ys: Range<usize>) -> impl Iterator<Item = (usize, usize)> {
     xs.into_iter()
         .flat_map(move |i| ys.clone().into_iter().map(move |j| (i, j)))
 }
 
-fn rect_of_ranges_itertools(
+#[inline]
+pub fn rect_of_ranges_itertools(
     xs: Range<usize>,
     ys: Range<usize>,
 ) -> impl Iterator<Item = (usize, usize)> {
