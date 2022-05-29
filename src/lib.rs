@@ -1,7 +1,7 @@
 use board::Board;
 use constants::N;
 
-mod board;
+pub mod board;
 mod constants;
 pub mod util;
 

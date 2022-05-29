@@ -2,6 +2,7 @@ use crate::{constants::SQUARE_SIZE, Board};
 use itertools::Itertools;
 use std::ops::Range;
 
+#[inline]
 pub fn valid_pos(board: &Board, row: usize, col: usize, value: usize) -> bool {
     value == 0
         || (!row_contains(board, row, value)
@@ -9,14 +10,17 @@ pub fn valid_pos(board: &Board, row: usize, col: usize, value: usize) -> bool {
             && !square_contains(board, row, col, value))
 }
 
+#[inline]
 pub fn row_contains(board: &Board, row_index: usize, value: usize) -> bool {
     board.0[row_index].into_iter().any(|v| v == value)
 }
 
+#[inline]
 pub fn col_contains(board: &Board, col_index: usize, value: usize) -> bool {
     board.0.into_iter().any(|row| row[col_index] == value)
 }
 
+#[inline]
 pub fn square_contains(board: &Board, row: usize, col: usize, value: usize) -> bool {
     let start_row = row - row % SQUARE_SIZE;
     let start_col = col - col % SQUARE_SIZE;

@@ -20,7 +20,7 @@ use std::fmt::Display;
     DerefMut,
 )]
 #[cfg_attr(test, derive(proptest_derive::Arbitrary))]
-pub struct Board(pub(crate) [[usize; N]; N]);
+pub struct Board(pub [[usize; N]; N]);
 
 // TODO: make beautiful
 impl Display for Board {
