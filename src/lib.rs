@@ -5,34 +5,26 @@ mod board;
 mod constants;
 pub mod util;
 
-// TODO reduce mutability.
-
-pub fn bktrk(board: &mut Board, mut row: usize, mut col: usize) -> bool {
+pub fn bktrk(board: &mut Board, row: usize, col: usize) -> bool {
     if row == N - 1 && col == N {
-        return true;
-    }
+        true
+    } else if col == N {
+        bktrk(board, row + 1, 0)
+    } else if board.0[row][col] > 0 {
+        bktrk(board, row, col + 1)
+    } else {
+        for num in 1..=N {
+            if util::valid_pos(board, row, col, num) {
+                board.0[row][col] = num;
 
-    if col == N {
-        // TODO remove bananas
-        row += 1;
-        col = 0
-    }
-
-    if board.0[row][col] > 0 {
-        return bktrk(board, row, col + 1);
-    }
-
-    for num in 1..=N {
-        if util::valid_pos(board, row, col, num) {
-            board.0[row][col] = num;
-
-            if bktrk(board, row, col + 1) {
-                return true;
+                if bktrk(board, row, col + 1) {
+                    return true;
+                }
             }
+            board.0[row][col] = 0;
         }
-        board.0[row][col] = 0;
+        false
     }
-    false
 }
 
 #[cfg(test)]
