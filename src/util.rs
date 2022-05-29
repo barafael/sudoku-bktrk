@@ -1,8 +1,6 @@
-use std::convert::identity;
-
-use crate::Board;
-
-const SQUARE_SIZE: usize = 3;
+use crate::{constants::SQUARE_SIZE, Board};
+use itertools::Itertools;
+use std::ops::Range;
 
 pub fn valid_pos(board: &Board, row: usize, col: usize, value: usize) -> bool {
     value == 0
@@ -21,17 +19,25 @@ pub fn col_contains(board: &Board, col_index: usize, value: usize) -> bool {
 
 // TODO simplify iterator spaghet
 pub fn square_contains(board: &Board, row: usize, col: usize, value: usize) -> bool {
-    let start_row = row - row % 3;
-    let start_col = col - col % 3;
-    (start_row..start_row + SQUARE_SIZE)
-        .into_iter()
-        .map(|i| {
-            (start_col..start_col + SQUARE_SIZE)
-                .into_iter()
-                .map(move |j| (i, j))
-                .any(|(i, j)| board.0[i][j] == value)
-        })
-        .any(identity)
+    let start_row = row - row % SQUARE_SIZE;
+    let start_col = col - col % SQUARE_SIZE;
+    let mut square = rect_of_ranges_itertools(
+        start_row..start_row + SQUARE_SIZE,
+        start_col..start_col + SQUARE_SIZE,
+    );
+    square.any(|(i, j)| board.0[i][j] == value)
+}
+
+fn rect_of_ranges(xs: Range<usize>, ys: Range<usize>) -> impl Iterator<Item = (usize, usize)> {
+    xs.into_iter()
+        .flat_map(move |i| ys.clone().into_iter().map(move |j| (i, j)))
+}
+
+fn rect_of_ranges_itertools(
+    xs: Range<usize>,
+    ys: Range<usize>,
+) -> impl Iterator<Item = (usize, usize)> {
+    xs.cartesian_product(ys)
 }
 
 #[cfg(test)]

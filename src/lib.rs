@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+mod constants;
 mod util;
 
 // TODO reduce mutability.
@@ -47,7 +48,7 @@ pub fn bktrk(board: &mut Board, mut row: usize, mut col: usize) -> bool {
         }
         board.0[row][col] = 0;
     }
-    return false;
+    false
 }
 
 #[cfg(test)]
