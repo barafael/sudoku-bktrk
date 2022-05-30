@@ -48,29 +48,12 @@ pub fn rect_of_ranges_itertools(
 #[cfg(test)]
 mod test {
     use super::rect_of_ranges;
-    use crate::{
-        util::{col_contains, row_contains, square_contains},
-        Board,
-    };
+    use crate::util::{col_contains, example, row_contains, square_contains};
     use itertools::Itertools;
-
-    fn initial() -> Board {
-        Board([
-            [0, 2, 0, 4, 0, 0, 7, 0, 0],
-            [7, 0, 0, 0, 0, 6, 0, 0, 8],
-            [0, 8, 3, 0, 0, 0, 0, 0, 1],
-            [0, 0, 2, 6, 0, 0, 0, 0, 0],
-            [0, 5, 0, 0, 0, 0, 0, 7, 0],
-            [0, 0, 0, 0, 0, 3, 9, 0, 0],
-            [9, 0, 0, 0, 0, 0, 8, 3, 0],
-            [3, 0, 0, 5, 0, 0, 0, 0, 7],
-            [0, 0, 1, 0, 0, 4, 0, 6, 0],
-        ])
-    }
 
     #[test]
     fn square_contains_works() {
-        let mut board = initial();
+        let mut board = example();
         board.0[0][2] = 1;
         board.0[2][0] = 3;
         board.0[1][1] = 5;
@@ -83,7 +66,7 @@ mod test {
 
     #[test]
     fn column_contains() {
-        let mut initial = initial();
+        let mut initial = example();
         initial.0[1][1] = 1;
         initial.0[8][1] = 3;
         initial.0[3][1] = 5;
@@ -94,7 +77,7 @@ mod test {
 
     #[test]
     fn row_contains_works() {
-        let mut initial = initial();
+        let mut initial = example();
         initial.0[1][1] = 1;
         initial.0[1][8] = 3;
         initial.0[1][3] = 5;
@@ -123,4 +106,19 @@ mod test {
             ]
         );
     }
+}
+
+#[cfg(test)]
+pub(crate) fn example() -> Board {
+    Board([
+        [0, 2, 0, 4, 0, 0, 7, 0, 0],
+        [7, 0, 0, 0, 0, 6, 0, 0, 8],
+        [0, 8, 3, 0, 0, 0, 0, 0, 1],
+        [0, 0, 2, 6, 0, 0, 0, 0, 0],
+        [0, 5, 0, 0, 0, 0, 0, 7, 0],
+        [0, 0, 0, 0, 0, 3, 9, 0, 0],
+        [9, 0, 0, 0, 0, 0, 8, 3, 0],
+        [3, 0, 0, 5, 0, 0, 0, 0, 7],
+        [0, 0, 1, 0, 0, 4, 0, 6, 0],
+    ])
 }

@@ -24,21 +24,6 @@ use std::fmt::Display;
 pub struct Board(pub [[usize; N]; N]);
 
 /*
-// TODO: make beautiful
-impl Display for Board {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        // TODO simplify
-        for i in 0..N {
-            for j in 0..N {
-                write!(f, "{} ", self.0[i][j])?;
-            }
-            writeln!(f)?;
-        }
-        Ok(())
-    }
-}
-*/
-
 impl Display for Board {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let hor_line = Some("------------\n".to_string());
@@ -51,39 +36,75 @@ impl Display for Board {
                     .map(|n| format!("{n}"))
                     .chunks(27)
                     .into_iter()
-                    .map(|chunk| {
+                    .flat_map(|chunk| {
                         chunk
                             .chunks(9)
                             .into_iter()
-                            .map(|line| {
+                            .flat_map(|line| {
                                 line.into_iter()
                                     .chunks(3)
                                     .into_iter()
-                                    .map(|chunk| chunk.chain(Some("|".to_string())))
-                                    .flatten()
+                                    .flat_map(|chunk| chunk.chain(Some("|".to_string())))
                                     .chain(Some("\n".to_string()))
                                     .collect_vec()
                             })
-                            .flatten()
                             .chain(hor_line.clone())
                             .collect_vec()
-                    })
-                    .flatten(),
+                    }),
             )
-            .map(|v| write!(f, "{}", v))
-            .collect::<Result<(), _>>()
+            .try_for_each(|v| write!(f, "{}", v))
+    }
+}
+*/
+
+impl Display for Board {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let hor_line = "|-----------------------|".to_string();
+        writeln!(f, "{hor_line}")?;
+        for third in &self
+            .iter()
+            .flatten()
+            .map(|num| char::from_digit(*num as u32, 10).expect("digit conversion failed"))
+            .chunks(27)
+        {
+            for line in third.chunks(9).into_iter() {
+                write!(f, "| ")?;
+                for triplet in line.chunks(3).into_iter() {
+                    write!(f, "{} | ", triplet.format(" "))?;
+                }
+                writeln!(f)?;
+            }
+            writeln!(f, "{hor_line}")?;
+        }
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::util::example;
     use proptest::prelude::*;
 
     #[test]
     fn displays() {
-        let board = Board::default();
-        println!("{board}");
+        let board = example();
+        let formatted = format!("{board}");
+        let expected = r##"|-----------------------|
+| 0 2 0 | 4 0 0 | 7 0 0 | 
+| 7 0 0 | 0 0 6 | 0 0 8 | 
+| 0 8 3 | 0 0 0 | 0 0 1 | 
+|-----------------------|
+| 0 0 2 | 6 0 0 | 0 0 0 | 
+| 0 5 0 | 0 0 0 | 0 7 0 | 
+| 0 0 0 | 0 0 3 | 9 0 0 | 
+|-----------------------|
+| 9 0 0 | 0 0 0 | 8 3 0 | 
+| 3 0 0 | 5 0 0 | 0 0 7 | 
+| 0 0 1 | 0 0 4 | 0 6 0 | 
+|-----------------------|
+"##;
+        assert_eq!(expected, formatted);
     }
 
     proptest! {
